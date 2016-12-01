@@ -26,6 +26,7 @@ class ValueIterationSyn(DP_AlgorithmSyn):
         self.__val_func_vector = self.__init_val_func_vector(
             state_action_space
         )
+        self.__error = []
 
     def __init_val_func_vector(self, state_action_space):
         val_func_vector = super(ValueIterationSyn, self).init_val_func_vector(
@@ -34,9 +35,9 @@ class ValueIterationSyn(DP_AlgorithmSyn):
         val_func_vector_copy = deepcopy(val_func_vector)
         return val_func_vector_copy
 
-    def __cal_trans_prob_mat_and_reward_vector(self, action):
+    def __cal_trans_prob_mat_and_reward_vector(self, action_sets):
         trans_prob_mat, reward = super(ValueIterationSyn, self).cal_trans_prob_mat_and_reward_vector(
-            action,
+            action_sets,
             self.__reward,
             self.__env,
             self.__state_action_space
@@ -56,24 +57,29 @@ class ValueIterationSyn(DP_AlgorithmSyn):
         policy_copy = deepcopy(policy)
         return policy_copy
 
+    def get_error(self):
+        error = deepcopy(self.__error)
+        return error
+
     def run(self):
         """
             run the value iteration until converged
         """
-        diff = float("inf")
+        error = float("inf")
+        count = 0
 
         action_space = self.__state_action_space.get_action_space()
+        num_legal_state = len(self.__state_action_space.get_legal_state_space())
+        state_range = [i for i in xrange(0, num_legal_state - 1)]
 
-        while diff > self.__epsilon:
+        while error > self.__epsilon or count < 20:
             pre_val_func_vector = deepcopy(self.__val_func_vector)
-
-            num_legal_state = len(self.__state_action_space.get_legal_state_space())
-            state_range = [i for i in xrange(0, num_legal_state - 1)]
 
             val_func_mat = np.array([])
             for action in action_space:
+                action_sets = [action for i in xrange(0, num_legal_state + 1)]
                 trans_prob_mat, reward_vector = self.__cal_trans_prob_mat_and_reward_vector(
-                    action
+                    action_sets
                 )
 
                 val_func_vector_temp = reward_vector + self.__alpha * np.matmul(
@@ -95,7 +101,12 @@ class ValueIterationSyn(DP_AlgorithmSyn):
 
             self.__val_func_vector[state_range, :] = val_func_mat.max(1)[state_range, :]
 
-            diff = np.linalg.norm(
+            error = np.linalg.norm(
                 pre_val_func_vector -
                 self.__val_func_vector
             )
+            if error < self.__epsilon:
+                count += 1
+            else:
+                count = 0
+            self.__error.append(error)

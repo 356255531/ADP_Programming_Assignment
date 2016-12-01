@@ -1,7 +1,6 @@
 from Enviroment import Enviroment
 from Reward import Reward1, Reward2
-from ValueIterationAsyn import ValueIterationAsyn
 from ValueIterationSyn import ValueIterationSyn
-from PolicyIterationAsyn import PolicyIterationAsyn
-from PlotFunctions import plot_policy
+from PolicyIterationSyn import PolicyIterationSyn
+from PlotAgent import PlotAgent
 from StateActionSpace import StateActionSpace

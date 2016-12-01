@@ -24,7 +24,8 @@ class PolicyIterationSyn(DP_AlgorithmSyn):
         self.__val_func_vector = self.__init_val_func_vector(
             state_action_space
         )
-        self.__policy = list()
+        self.__policy = []
+        self.__error = []
 
     def __init_val_func_vector(self, state_action_space):
         val_func_vector = super(PolicyIterationSyn, self).init_val_func_vector(
@@ -33,9 +34,9 @@ class PolicyIterationSyn(DP_AlgorithmSyn):
         val_func_vector_copy = deepcopy(val_func_vector)
         return val_func_vector_copy
 
-    def __cal_trans_prob_mat_and_reward_vector(self, action):
+    def __cal_trans_prob_mat_and_reward_vector(self, action_sets):
         trans_prob_mat, reward = super(PolicyIterationSyn, self).cal_trans_prob_mat_and_reward_vector(
-            action,
+            action_sets,
             self.__reward,
             self.__env,
             self.__state_action_space
@@ -50,6 +51,10 @@ class PolicyIterationSyn(DP_AlgorithmSyn):
         policy = deepcopy(self.__policy)
         return policy
 
+    def get_error(self):
+        error = deepcopy(self.__error)
+        return error
+
     def run(self):
         pre_policy = deepcopy(self.__policy)
         self.__policy_improvement()
@@ -60,38 +65,53 @@ class PolicyIterationSyn(DP_AlgorithmSyn):
             self.__policy_improvement()
 
     def __policy_evaluation(self):
-        diff = float("inf")
+        error = float("inf")
+        count = 0
 
-        while diff > self.__epsilon:
+        num_legal_state = len(self.__state_action_space.get_legal_state_space())
+        state_range = [i for i in xrange(0, num_legal_state - 1)]
+
+        while error > self.__epsilon or count < 20:
             pre_val_func_vector = deepcopy(self.__val_func_vector)
 
-            num_legal_state = len(self.__state_action_space.get_legal_state_space())
-            state_range = [i for i in xrange(0, num_legal_state - 1)]
+            trans_prob_mat, reward_vector = self.__cal_trans_prob_mat_and_reward_vector(
+                self.__policy
+            )
 
-            val_func_mat = np.array([])
-
-            self.__val_func_vector[state_range, :] = val_func_mat.max(1)[state_range, :]
-
-            diff = np.linalg.norm(
-                pre_val_func_vector -
+            val_func_vector_temp = reward_vector + self.__alpha * np.matmul(
+                trans_prob_mat,
                 self.__val_func_vector
             )
 
+            self.__val_func_vector[state_range, :] = val_func_vector_temp[state_range, :]
+
+            error = np.linalg.norm(
+                pre_val_func_vector -
+                self.__val_func_vector
+            )
+            if error < self.__epsilon:
+                count += 1
+            else:
+                count = 0
+            self.__error.append(error)
+
     def __policy_improvement(self):
         self.__policy = super(PolicyIterationSyn, self).derive_policy(
-            self.__val_func,
+            self.__val_func_vector,
+            self.__state_action_space,
             self.__env
         )
 
     def __if_policy_diff(self, policy):
+        isinstance(policy, list)
         if not len(policy) == len(self.__policy):
-            return False
+            return True
 
         for action1, action2 in zip(self.__policy, policy):
             if action1 != action2:
-                return False
+                return True
 
-        return True
+        return False
 
 
 if __name__ == "__main__":

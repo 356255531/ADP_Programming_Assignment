@@ -1,5 +1,6 @@
 import numpy as np
 from StateActionSpace import StateActionSpace
+from Enviroment import Enviroment
 
 
 class DP_AlgorithmSyn(object):
@@ -44,7 +45,8 @@ class DP_AlgorithmSyn(object):
             Derive the policy from given vectorized value function
             and legal state space
         """
-        policy = dict()
+        policy = []
+
         legal_state_space = state_action_space.get_legal_state_space()
         action_space = state_action_space.get_action_space()
 
@@ -54,16 +56,21 @@ class DP_AlgorithmSyn(object):
 
             for action in action_space:
                 next_state = env.perform_action(state, action)
-                feature_vector = env.get_feature_vector_of_legal_state(next_state).transpose()
-                val_func = np.matmul(feature_vector, val_func_vector)
+                feature_vector = state_action_space.get_feature_vector_of_legal_state(next_state).transpose()
+                val_func = np.matmul(
+                    np.mat(feature_vector),
+                    val_func_vector
+                )
                 if val_func > max_val:
                     max_val = val_func
-                    policy[state] = action
+                    policy_temp = action
+            policy.append(policy_temp)
+
         return policy
 
     def cal_trans_prob_mat_and_reward_vector(
         self,
-        action,
+        action_sets,
         reward_func,
         env,
         state_action_space
@@ -75,10 +82,13 @@ class DP_AlgorithmSyn(object):
 
             return trans_prob_mat(numpy.mat), reward_vector(numpy.mat)
         """
+        isinstance(action_sets, list)
+        isinstance(env, Enviroment)
+        isinstance(state_action_space, StateActionSpace)
         legal_state_space = state_action_space.get_legal_state_space()
 
         trans_prob_mat, reward_vector = np.array([]), np.array([])
-        for state, action in legal_state_space:
+        for state, action in zip(legal_state_space, action_sets):
             next_state = env.perform_action(state, action)
 
             feature_vector = state_action_space.get_feature_vector_of_legal_state(next_state)
