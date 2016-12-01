@@ -56,7 +56,7 @@ alpha = 0.9
 ################ Comparison Condition Setting ################
 algorithm_sets = [ValueIterationSyn, PolicyIterationSyn]
 
-alpha_sets = [0.1, 0.5, 0.9]
+alpha_sets = [0, 0.3, 0.6, 0.9]
 
 reward_sets = [Reward1, Reward2]
 
@@ -94,6 +94,6 @@ for algorithm_instance in algorithm_compare_sets:
     policy_sets.append(policy)
 
 ###################### Plot and save images ####################
-plot_agent = PlotAgent()  # note that all the images will be saved
+plot_agent = PlotAgent(env, state_action_space)  # note that all the images will be saved
 plot_agent.plot_policies(policy_sets, plot_labels)  # but not displayed
 plot_agent.plot_error(error_sets, plot_labels)

@@ -19,7 +19,7 @@ class Enviroment(object):
 
         get_goal_state()
 
-        is_goal_state(, state)
+        is_goal_state(tuple state)
 
         get_action_space()
 
