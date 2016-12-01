@@ -14,7 +14,7 @@ class DP_Algorithm(object):
                 val_func[state] = -float("inf")
             else:
                 if env.is_goal_state(state):
-                    val_func[state] = 10e10
+                    val_func[state] = 100
                 else:
                     val_func[state] = rd.random()
         return val_func
