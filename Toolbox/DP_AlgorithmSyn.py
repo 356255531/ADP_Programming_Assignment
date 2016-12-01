@@ -1,11 +1,11 @@
 import numpy as np
-import sys
-import random as rd
+from StateActionSpace import StateActionSpace
 
 
 class DP_AlgorithmSyn(object):
     """
         Parent class of DP algorithm(VI, PI)
+
         Member function:
             init_val_func_vector(val_func)
 
@@ -20,6 +20,14 @@ class DP_AlgorithmSyn(object):
     """
 
     def init_val_func_vector(self, state_action_space):
+        """
+            Randomly initialize the value function
+            vector and assgin the value of goal state
+            to 100 at the end of value function vector
+
+            return numpy.mat
+        """
+        isinstance(state_action_space, StateActionSpace)
         num_legal_ele = len(state_action_space.get_legal_state_space())
         val_func_vector = np.random.random(num_legal_ele)
         val_func_vector[-1] = 100
@@ -60,43 +68,37 @@ class DP_AlgorithmSyn(object):
         env,
         state_action_space
     ):
+        """
+            Caculate the transition probility matrix and
+            reward function vector of all states with given
+            action
 
+            return trans_prob_mat(numpy.mat), reward_vector(numpy.mat)
+        """
         legal_state_space = state_action_space.get_legal_state_space()
 
-        state = legal_state_space[0]
-        next_state = env.perform_action(
-            state,
-            action
-        )
-        feature_vector = state_action_space.get_feature_vector_of_legal_state(next_state)
-        feature_vector = feature_vector.transpose()
-        trans_prob_mat = np.mat(feature_vector)
-
-        reward = reward_func.get_reward(state, action, next_state)
-        reward_vector = np.mat(np.mat(reward))
-
-        for state in legal_state_space:
+        trans_prob_mat, reward_vector = np.array([]), np.array([])
+        for state, action in legal_state_space:
             next_state = env.perform_action(state, action)
 
             feature_vector = state_action_space.get_feature_vector_of_legal_state(next_state)
-            feature_vector = feature_vector.transpose()
             trans_prob_mat = np.append(
                 trans_prob_mat,
-                np.mat(feature_vector),
-                axis=0
+                feature_vector,
             )
 
             reward = reward_func.get_reward(state, action, next_state)
             reward_vector = np.append(
                 reward_vector,
-                np.mat(reward),
-                axis=0)
+                reward,
+            )
 
-        trans_prob_mat = np.delete(trans_prob_mat, (0), axis=0)
-        reward_vector = np.delete(reward_vector, (0), axis=0)
+        num_legal_state = len(legal_state_space)
+        trans_prob_mat = np.mat(np.reshape(trans_prob_mat, (num_legal_state, num_legal_state)))
+        reward_vector = np.mat(np.reshape(reward_vector, (num_legal_state, 1)))
         return trans_prob_mat, reward_vector
 
 
 if __name__ == "__main__":
-    print np.mat(np.random.random(5)).transpose().shape
-    print np.matmul(np.zeros(5).transpose(), np.zeros(5))
+    a = []
+    print np.array(a)

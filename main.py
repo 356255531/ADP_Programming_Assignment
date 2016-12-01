@@ -4,7 +4,7 @@ import itertools
 from Toolbox import Enviroment
 from Toolbox import Reward1, Reward2
 from Toolbox import PolicyIterationAsyn, ValueIterationAsyn
-from Toolbox import ValueIterationSyn
+from Toolbox import ValueIterationSyn, PolicyIterationSyn
 from Toolbox import StateActionSpace
 # from Toolbox import plot_policy, plot_error
 
@@ -37,10 +37,6 @@ action_dict = {
 start_state = (4, 5)
 goal_state = (6, 6)
 
-state_space.remove(goal_state)
-state_space.append(goal_state)
-
-
 env = Enviroment(maze_map,
                  state_space,
                  action_space,
@@ -57,7 +53,7 @@ reward = Reward2(env)
 
 alpha = 0.9
 
-val_iter = ValueIterationSyn(
+policy_iter = PolicyIterationSyn(
     env,
     state_action_space,
     reward,
@@ -65,7 +61,7 @@ val_iter = ValueIterationSyn(
     epsilon
 )
 
-val_iter.run()
+policy_iter.run()
 # algorithm_sets = [ValueIterationAsyn, PolicyIterationAsyn]
 
 # alpha_sets = [0.1, 0.5, 0.9]

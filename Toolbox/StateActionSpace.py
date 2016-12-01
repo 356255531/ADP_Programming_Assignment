@@ -40,9 +40,22 @@ class StateActionSpace(object):
     def __init__(self, env):
         super(StateActionSpace, self).__init__()
         self.__env = env
-        self.__state_space = env.get_state_space()
+        self.__state_space = self.__derive_state_space(env)
         self.__legal_state_space = self.__derive_legal_state_space(env)
         self.__action_space = env.get_action_space()
+
+    def __derive_state_space(self, env):
+        """
+            Copy the state space from Enviroment class
+            and put the goal state at the end of the state
+            space
+
+            return state space, list
+        """
+        state_space = env.get_state_space()
+        state_space.remove(env.get_goal_state())
+        state_space.append(env.get_goal_state())
+        return state_space
 
     def __derive_legal_state_space(self, env):
         """
@@ -86,7 +99,7 @@ class StateActionSpace(object):
         """
             transform a state(tuple) to a sparse vector
 
-            return (0,0,0...,1,0,...0), numpy.matrix
+            return (0,0,0...,1,0,...0), numpy.array
         """
         self.__env.if_state_out_of_range(state)
         try:
