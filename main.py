@@ -4,6 +4,8 @@ import itertools
 from Toolbox import Enviroment
 from Toolbox import Reward1, Reward2
 from Toolbox import PolicyIterationAsyn, ValueIterationAsyn
+from Toolbox import ValueIterationSyn
+from Toolbox import StateActionSpace
 # from Toolbox import plot_policy, plot_error
 
 maze_map = np.array(
@@ -35,6 +37,9 @@ action_dict = {
 start_state = (4, 5)
 goal_state = (6, 6)
 
+state_space.remove(goal_state)
+state_space.append(goal_state)
+
 
 env = Enviroment(maze_map,
                  state_space,
@@ -44,42 +49,54 @@ env = Enviroment(maze_map,
                  goal_state
                  )
 
+state_action_space = StateActionSpace(env)
+
 epsilon = 10e-5
 
-algorithm_sets = [ValueIterationAsyn, PolicyIterationAsyn]
+reward = Reward1(env)
 
-alpha_sets = [0.1, 0.5, 0.9]
+alpha = 0.9
 
-reward_sets = [Reward1, Reward2]
+val_iter = ValueIterationSyn(
+    env,
+    state_action_space,
+    reward,
+    alpha,
+    epsilon
+)
 
-algorithm_compare_sets = []
-plot_labels = []
-for algorithm_setting in algorithm_sets:
-    for reward_setting in reward_sets:
-        for alpha in alpha_sets:
-            reward = reward_setting(env)
-            plot_labels.append(algorithm_setting.__name__ +
-                               ', ' +
-                               reward_setting.__name__ +
-                               ', ' +
-                               'alpha = ' +
-                               str(alpha))
-            algorithm = algorithm_setting(
-                env,
-                reward,
-                alpha,
-                epsilon
-            )
-            algorithm.run()
-            algorithm_compare_sets.append(algorithm)
+val_iter.run()
+# algorithm_sets = [ValueIterationAsyn, PolicyIterationAsyn]
 
-policy_sets = []
-for algorithm_instance in algorithm_compare_sets:
-    val_func = algorithm_instance.get_val_func()
-    policy = algorithm_instance.get_policy()
-    policy_sets.append(policy)
+# alpha_sets = [0.1, 0.5, 0.9]
 
-# plot_policy(policy_sets, plot_labels)
-print algorithm_compare_sets[9].print_val_func()
-print algorithm_compare_sets[10].print_val_func()
-print algorithm_compare_sets[11].print_val_func()
+# reward_sets = [Reward1, Reward2]
+
+# algorithm_compare_sets = []
+# plot_labels = []
+# for algorithm_setting in algorithm_sets:
+#     for reward_setting in reward_sets:
+#         for alpha in alpha_sets:
+#             reward = reward_setting(env)
+#             plot_labels.append(algorithm_setting.__name__ +
+#                                ', ' +
+#                                reward_setting.__name__ +
+#                                ', ' +
+#                                'alpha = ' +
+#                                str(alpha))
+#             algorithm = algorithm_setting(
+#                 env,
+#                 reward,
+#                 alpha,
+#                 epsilon
+#             )
+#             algorithm.run()
+#             algorithm_compare_sets.append(algorithm)
+
+# policy_sets = []
+# for algorithm_instance in algorithm_compare_sets:
+#     val_func = algorithm_instance.get_val_func()
+#     policy = algorithm_instance.get_policy()
+#     policy_sets.append(policy)
+
+# # plot_policy(policy_sets, plot_labels)

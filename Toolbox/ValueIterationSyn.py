@@ -1,95 +1,109 @@
 import numpy as np
+import sys
 from copy import deepcopy
 
-from DP_Algorithm import DP_Algorithm
+from DP_AlgorithmSyn import DP_AlgorithmSyn
 
 
-class ValueIterationAsyn(DP_Algorithm):
-    """docstring for ValueIterationAsyn"""
+class ValueIterationSyn(DP_AlgorithmSyn):
+    """
+        Synchronous value iteration DP algortihm
+    """
 
     def __init__(
         self,
         env,
+        state_action_space,
         reward,
         alpha,
         epsilon
     ):
-        super(ValueIterationAsyn, self).__init__()
+        super(ValueIterationSyn, self).__init__()
         self.__env = env
+        self.__state_action_space = state_action_space
         self.__reward = reward
         self.__alpha = alpha
         self.__epsilon = epsilon
-        self.__val_func = self.__init_val_func()
+        self.__val_func_vector = self.__init_val_func_vector(state_action_space)
 
-    def __init_val_func(self):
-        val_func_vector = super(ValueIterationAsyn, self).init_val_func(self.__env)
+    def __init_val_func_vector(self, state_action_space):
+        val_func_vector = super(ValueIterationSyn, self).init_val_func_vector(
+            state_action_space
+        )
+        val_func_vector_copy = deepcopy(val_func_vector)
+        return val_func_vector_copy
+
+    def __cal_trans_prob_mat_and_reward_vector(self, action):
+        trans_prob_mat, reward = super(ValueIterationSyn, self).cal_trans_prob_mat_and_reward_vector(
+            action,
+            self.__reward,
+            self.__env,
+            self.__state_action_space
+        )
+        return trans_prob_mat, reward
+
+    def get_val_func_vector(self):
+        val_func_vector = deepcopy(self.__val_func_vector)
         return val_func_vector
-
-    def get_val_func(self):
-        val_func_vector = deepcopy(self.__val_func)
-        return val_func_vector
-
-    def print_val_func(self):
-        for x in xrange(0, 8):
-            temp = [round(self.__val_func[(y, x)], 2) for y in xrange(0, 8)]
-            print temp
 
     def get_policy(self):
-        policy = super(ValueIterationAsyn, self).derive_policy(
-            self.__val_func,
+        policy = super(ValueIterationSyn, self).derive_policy(
+            self.__val_func_vector,
+            self.__state_action_space,
             self.__env
         )
-        return policy
-
-    def build_states_val_vector(self, state):
-        round_val_vector = np.zeros(5)
-        round_val_vector[4] = self.__val_func[state]
-        action_space = self.__env.get_action_space()
-        next_states = [self.__env.perform_action(state, i) for i in action_space]
-        for next_state in next_states:
-            round_val_vector[next_states.index(next_state)] = self.__val_func[next_state]
-        return round_val_vector
+        policy_copy = deepcopy(policy)
+        return policy_copy
 
     def run(self):
         diff = float("inf")
-        state_space = self.__env.get_state_space()
-        action_space = self.__env.get_action_space()
 
-        val_func_vector = []
-        for i in self.__val_func.values():
-            if i != -float("inf"):
-                val_func_vector.append(i)
+        action_space = self.__state_action_space.get_action_space()
 
         while diff > self.__epsilon:
-            pre_val_func = val_func_vector
+            pre_val_func_vector = deepcopy(self.__val_func_vector)
 
-            for state in state_space:
-                if (
-                    self.__env.is_goal_state(state) or
-                    not self.__env.if_state_legal(state)
-                ):
-                    continue
-                val = []
-                for action in action_space:
-                    next_state = self.__env.perform_action(state, action)
-                    step_reward = self.__reward.get_reward(
-                        state,
-                        action,
-                        next_state
-                    )
-                    val.append(step_reward + self.__alpha * np.dot(
-                        self.__env.trans_prob_func(state, action),
-                        self.build_states_val_vector(state)
-                    )
-                    )
-                self.__val_func[state] = max(val)
-
-            val_func_vector = []
-            for i in self.__val_func.values():
-                if i != -float("inf"):
-                    val_func_vector.append(i)
-
-            diff = np.linalg.norm(
-                np.array(pre_val_func) -
-                np.array(val_func_vector)
+            trans_prob_mat, reward_vector = self.__cal_trans_prob_mat_and_reward_vector(
+                action_space[0]
             )
+            val_func_vector_temp = reward_vector + np.matmul(
+                trans_prob_mat,
+                self.__val_func_vector
+            )
+
+            row_num, _ = val_func_vector_temp.shape
+            val_func_vector_temp = val_func_vector_temp[[0, row_num - 2], :]
+            val_func_mat = np.mat(val_func_vector_temp)
+
+            for action in action_space:
+                trans_prob_mat, reward_vector = self.__cal_trans_prob_mat_and_reward_vector(
+                    action
+                )
+
+                val_func_vector_temp = reward_vector + np.matmul(
+                    trans_prob_mat,
+                    self.__val_func_vector
+                )
+
+                val_func_vector_temp = val_func_vector_temp[[0, row_num - 2], :]
+
+                val_func_mat = np.append(
+                    val_func_mat,
+                    val_func_vector_temp,
+                    axis=1
+                )
+            val_func_mat = np.delete(
+                val_func_mat,
+                0,
+                axis=1
+            )
+            # print val_func_mat
+            print val_func_mat.max(1)
+            # sys.exit(0)
+            self.__val_func_vector[[0, row_num - 2], :] = val_func_mat.max(1)
+            # print self.__val_func_vector
+            diff = np.linalg.norm(
+                pre_val_func_vector -
+                self.__val_func_vector
+            )
+        print self.get_val_func_vector().ravel()
