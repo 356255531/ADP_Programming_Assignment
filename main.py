@@ -53,7 +53,7 @@ state_action_space = StateActionSpace(env)
 
 epsilon = 10e-5
 
-reward = Reward1(env)
+reward = Reward2(env)
 
 alpha = 0.9
 

@@ -1,5 +1,6 @@
 import numpy as np
 import sys
+import pdb
 from copy import deepcopy
 
 from DP_AlgorithmSyn import DP_AlgorithmSyn
@@ -66,26 +67,30 @@ class ValueIterationSyn(DP_AlgorithmSyn):
             trans_prob_mat, reward_vector = self.__cal_trans_prob_mat_and_reward_vector(
                 action_space[0]
             )
-            val_func_vector_temp = reward_vector + np.matmul(
+
+            val_func_vector_temp = reward_vector + self.__alpha * np.matmul(
                 trans_prob_mat,
                 self.__val_func_vector
             )
 
             row_num, _ = val_func_vector_temp.shape
-            val_func_vector_temp = val_func_vector_temp[[0, row_num - 2], :]
+            row_range = [i for i in xrange(0, row_num - 1)]
+
+            val_func_vector_temp = val_func_vector_temp[row_range, :]
             val_func_mat = np.mat(val_func_vector_temp)
 
             for action in action_space:
                 trans_prob_mat, reward_vector = self.__cal_trans_prob_mat_and_reward_vector(
                     action
                 )
+                # pdb.set_trace()
 
-                val_func_vector_temp = reward_vector + np.matmul(
+                val_func_vector_temp = reward_vector + self.__alpha * np.matmul(
                     trans_prob_mat,
                     self.__val_func_vector
                 )
 
-                val_func_vector_temp = val_func_vector_temp[[0, row_num - 2], :]
+                val_func_vector_temp = val_func_vector_temp[row_range, :]
 
                 val_func_mat = np.append(
                     val_func_mat,
@@ -98,9 +103,9 @@ class ValueIterationSyn(DP_AlgorithmSyn):
                 axis=1
             )
             # print val_func_mat
-            print val_func_mat.max(1)
+            # print val_func_mat.max(1)
             # sys.exit(0)
-            self.__val_func_vector[[0, row_num - 2], :] = val_func_mat.max(1)
+            self.__val_func_vector[row_range, :] = val_func_mat.max(1)
             # print self.__val_func_vector
             diff = np.linalg.norm(
                 pre_val_func_vector -
