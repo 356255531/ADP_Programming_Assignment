@@ -3,9 +3,12 @@ import itertools
 
 from Toolbox import Enviroment
 from Toolbox import Reward1, Reward2
-from Toolbox import PolicyIterationAsyn, ValueIterationAsyn
-# from Toolbox import plot_policy, plot_error
+from Toolbox import ValueIterationSyn, PolicyIterationSyn
+from Toolbox import StateActionSpace
+from Toolbox import PlotAgent
 
+
+##################### Enviroment Setting #####################
 maze_map = np.array(
     [
         [0, 0, 0, 0, 0, 0, 0, 0],
@@ -35,7 +38,6 @@ action_dict = {
 start_state = (4, 5)
 goal_state = (6, 6)
 
-
 env = Enviroment(maze_map,
                  state_space,
                  action_space,
@@ -44,14 +46,22 @@ env = Enviroment(maze_map,
                  goal_state
                  )
 
+################### Dependent Module Setting ################
+state_action_space = StateActionSpace(env)
+
+########################## RL parameter setting ###############
 epsilon = 10e-5
 
-algorithm_sets = [ValueIterationAsyn, PolicyIterationAsyn]
+alpha = 0.9
 
-alpha_sets = [0.1, 0.5, 0.9]
+################ Comparison Condition Setting ################
+algorithm_sets = [ValueIterationSyn, PolicyIterationSyn]
+
+alpha_sets = [0, 0.3, 0.6, 0.9]
 
 reward_sets = [Reward1, Reward2]
 
+###################### Comparing ############################
 algorithm_compare_sets = []
 plot_labels = []
 for algorithm_setting in algorithm_sets:
@@ -66,6 +76,7 @@ for algorithm_setting in algorithm_sets:
                                str(alpha))
             algorithm = algorithm_setting(
                 env,
+                state_action_space,
                 reward,
                 alpha,
                 epsilon
@@ -73,13 +84,25 @@ for algorithm_setting in algorithm_sets:
             algorithm.run()
             algorithm_compare_sets.append(algorithm)
 
+###################### Record Policy #########################
 policy_sets = []
+error_sets = []
+val_func_vector_sets = []
 for algorithm_instance in algorithm_compare_sets:
-    val_func = algorithm_instance.get_val_func()
+    error = algorithm_instance.get_error()
+    error_sets.append(error)
     policy = algorithm_instance.get_policy()
     policy_sets.append(policy)
+    val_func_vector = algorithm_instance.get_val_func_vector()
+    val_func_vector_sets.append(val_func_vector)
 
-# plot_policy(policy_sets, plot_labels)
-print algorithm_compare_sets[9].print_val_func()
-print algorithm_compare_sets[10].print_val_func()
-print algorithm_compare_sets[11].print_val_func()
+###################### Plot and save images ####################
+plot_agent = PlotAgent(env, state_action_space)  # note that all the images will be saved
+plot_agent.plot_policies(policy_sets, plot_labels)  # but not displayed
+plot_agent.plot_error(error_sets, plot_labels)
+plot_agent.plot_val_func(
+    val_func_vector_sets,
+    plot_labels,
+    state_action_space,
+    env
+)
