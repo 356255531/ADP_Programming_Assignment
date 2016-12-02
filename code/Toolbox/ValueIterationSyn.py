@@ -7,6 +7,44 @@ from DP_AlgorithmSyn import DP_AlgorithmSyn
 class ValueIterationSyn(DP_AlgorithmSyn):
     """
         Synchronous value iteration DP algortihm
+
+        Usage:
+            simplely call the member function run() after initalization
+
+        Member function:
+            __init_val_func_vector(state_action_space)
+
+            __cal_trans_prob_mat_and_reward_vector(action_sets)
+
+            get_val_func_vector()
+
+            get_policy()
+
+            get_error()
+
+            run()
+
+        Attributes:
+            __env::
+                Enviroment class instance
+
+            __state_action_space:
+                StateActionSpace class instance
+
+            __reward:
+                Reward class instance
+
+            __alpha:
+                Learning rate(discount factor), float
+
+            __epsilon:
+                Convergence error threashold, float
+
+            __val_func_vector:
+                A column vector of value functions of legal states, np.mat
+
+            __error:
+                Learning error sequence of value iteration, list
     """
 
     def __init__(
@@ -29,6 +67,11 @@ class ValueIterationSyn(DP_AlgorithmSyn):
         self.__error = []
 
     def __init_val_func_vector(self, state_action_space):
+        """
+            derive the value functions of legal states and vectorize into column vector
+
+            return np.mat
+        """
         val_func_vector = super(ValueIterationSyn, self).init_val_func_vector(
             state_action_space
         )
@@ -36,6 +79,14 @@ class ValueIterationSyn(DP_AlgorithmSyn):
         return val_func_vector_copy
 
     def __cal_trans_prob_mat_and_reward_vector(self, action_sets):
+        """
+            Caculate the transition probility matrix and
+            reward function vector of all states with given
+            action
+
+            return trans_prob_mat(numpy.mat), reward_vector(numpy.mat)
+
+        """
         trans_prob_mat, reward = super(ValueIterationSyn, self).cal_trans_prob_mat_and_reward_vector(
             action_sets,
             self.__reward,
@@ -45,6 +96,11 @@ class ValueIterationSyn(DP_AlgorithmSyn):
         return trans_prob_mat, reward
 
     def get_val_func_vector(self):
+        """
+            return the value function vector
+
+            return np.mat
+        """
         val_func_vector = deepcopy(self.__val_func_vector)
         return val_func_vector
 
@@ -54,10 +110,20 @@ class ValueIterationSyn(DP_AlgorithmSyn):
             self.__state_action_space,
             self.__env
         )
+        """
+            derive and return learned policy
+
+            return list
+        """
         policy_copy = deepcopy(policy)
         return policy_copy
 
     def get_error(self):
+        """
+            return learning error sequence during value iteration
+
+            return list
+        """
         error = deepcopy(self.__error)
         return error
 

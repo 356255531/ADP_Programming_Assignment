@@ -45,6 +45,7 @@ env = Enviroment(maze_map,
                  start_state,
                  goal_state
                  )
+
 ################### Dependent Module Setting ################
 state_action_space = StateActionSpace(env)
 
@@ -61,7 +62,6 @@ alpha_sets = [0, 0.3, 0.6, 0.9]
 reward_sets = [Reward1, Reward2]
 
 ###################### Comparing ############################
-
 algorithm_compare_sets = []
 plot_labels = []
 for algorithm_setting in algorithm_sets:
@@ -87,13 +87,22 @@ for algorithm_setting in algorithm_sets:
 ###################### Record Policy #########################
 policy_sets = []
 error_sets = []
+val_func_vector_sets = []
 for algorithm_instance in algorithm_compare_sets:
     error = algorithm_instance.get_error()
     error_sets.append(error)
     policy = algorithm_instance.get_policy()
     policy_sets.append(policy)
+    val_func_vector = algorithm_instance.get_val_func_vector()
+    val_func_vector_sets.append(val_func_vector)
 
 ###################### Plot and save images ####################
 plot_agent = PlotAgent(env, state_action_space)  # note that all the images will be saved
 plot_agent.plot_policies(policy_sets, plot_labels)  # but not displayed
 plot_agent.plot_error(error_sets, plot_labels)
+plot_agent.plot_val_func(
+    val_func_vector_sets,
+    plot_labels,
+    state_action_space,
+    env
+)

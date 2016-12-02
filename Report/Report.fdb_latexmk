@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1480602764 "Report.tex" "Report.pdf" "Report" 1480602765
+["pdflatex"] 1480703676 "Report.tex" "Report.pdf" "Report" 1480703677
   "/usr/local/texlive/2015/texmf-dist/fonts/map/fontname/texfonts.map" 1272929888 3287 e6b82fe08f5336d4d5ebc73fb1152e87 ""
   "/usr/local/texlive/2015/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/usr/local/texlive/2015/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1246382020 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -66,9 +66,12 @@
   "/usr/local/texlive/2015/texmf-dist/web2c/texmf.cnf" 1428852030 31983 18aeec08f48baa3cf3508d538dd5f459 ""
   "/usr/local/texlive/2015/texmf-var/web2c/xetex/xelatex.fmt" 1432479679 3445950 7f6125c6eb78b33bcedbe55e49dbfd83 ""
   "/usr/local/texlive/2015/texmf.cnf" 1432479636 577 0d611272082f3cdb8e80e09a3c69cf07 ""
-  "Report.aux" 1480602765 8 a94a2480d3289e625eea47cd1b285758 ""
-  "Report.tex" 1480602764 2514 975f57f4f0ab815ebc46d1cd676e7b8c ""
+  "ErrorPlot.jpg" 1480611923 335371 ab09abb7b448b33fcf6fb4f1ac4dbfab ""
+  "PolicyPlot.jpg" 1480611708 539424 b54f025699e260a10fc570562a61e5bd ""
+  "Report.aux" 1480703677 8 a94a2480d3289e625eea47cd1b285758 ""
+  "Report.tex" 1480703674 3419 0291f067d9609df0fea95fb0c7be2129 ""
+  "ValueFunctionPlot.jpg" 1480703646 463271 fff117e8ff6654d7003ae9921c6943cf ""
   (generated)
-  "Report.pdf"
   "Report.log"
+  "Report.pdf"
   "Report.aux"
