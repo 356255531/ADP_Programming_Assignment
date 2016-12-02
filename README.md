@@ -12,4 +12,4 @@ See in Report directory the file ends up with .pdf
 
 ## Source
 
-If there are some errors when running the code, please "git clone https://github.com/356255531/sqlite.git" for downloading the from newest version.
+If there are some errors when running the code, please "git clone https://github.com/356255531/ADP_Programming_Assignment.git" for downloading the from newest version.
