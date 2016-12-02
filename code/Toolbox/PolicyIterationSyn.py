@@ -160,7 +160,7 @@ class PolicyIterationSyn(DP_AlgorithmSyn):
         num_legal_state = len(self.__state_action_space.get_legal_state_space())
         state_range = [i for i in xrange(0, num_legal_state - 1)]
 
-        while error > self.__epsilon or count < 20:
+        while error > self.__epsilon or count < 5:
             pre_val_func_vector = deepcopy(self.__val_func_vector)
 
             trans_prob_mat, reward_vector = self.__cal_trans_prob_mat_and_reward_vector(
