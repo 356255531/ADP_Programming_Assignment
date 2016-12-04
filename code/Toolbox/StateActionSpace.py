@@ -5,6 +5,8 @@ from copy import deepcopy
 
 from Enviroment import Enviroment
 
+__auther__ = "Zhiwei"
+
 
 class StateActionSpace(object):
     """

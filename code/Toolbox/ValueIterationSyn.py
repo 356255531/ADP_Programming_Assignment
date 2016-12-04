@@ -3,6 +3,8 @@ from copy import deepcopy
 
 from DP_AlgorithmSyn import DP_AlgorithmSyn
 
+__auther__ = "Zhiwei"
+
 
 class ValueIterationSyn(DP_AlgorithmSyn):
     """

@@ -7,6 +7,7 @@ from Toolbox import ValueIterationSyn, PolicyIterationSyn
 from Toolbox import StateActionSpace
 from Toolbox import PlotAgent
 
+__auther__ = "Zhiwei"
 
 ##################### Enviroment Setting #####################
 maze_map = np.array(

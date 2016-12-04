@@ -2,6 +2,8 @@ import numpy as np
 from StateActionSpace import StateActionSpace
 from Enviroment import Enviroment
 
+__auther__ = "Zhiwei"
+
 
 class DP_AlgorithmSyn(object):
     """

@@ -1,3 +1,6 @@
+__auther__ = "Zhiwei"
+
+
 class Reward2(object):
     """
         Reward rule 2:
@@ -7,6 +10,7 @@ class Reward2(object):
         Member function:
             get_reward(current_state, action, next_state):
     """
+
     def __init__(self, env):
         super(Reward2, self).__init__()
         self.__env = env

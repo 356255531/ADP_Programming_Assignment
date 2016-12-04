@@ -3,6 +3,8 @@ import numpy as np
 import itertools
 import sys
 
+__auther__ = "Zhiwei"
+
 
 class Enviroment(object):
     """

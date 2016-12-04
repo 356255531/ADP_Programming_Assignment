@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import numpy as np
 
+__auther__ = "Zhiwei"
+
 
 class PlotAgent(object):
     """
