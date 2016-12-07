@@ -25,7 +25,7 @@ class Reward2(object):
             return reward by given states and action, int
         """
         if self.__env.is_goal_state(next_state):
-            return 1
+            return 0
         else:
             return -1
 

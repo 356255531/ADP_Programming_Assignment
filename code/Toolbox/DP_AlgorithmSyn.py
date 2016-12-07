@@ -33,7 +33,7 @@ class DP_AlgorithmSyn(object):
         isinstance(state_action_space, StateActionSpace)
         num_legal_ele = len(state_action_space.get_legal_state_space())
         val_func_vector = np.random.random(num_legal_ele)
-        val_func_vector[-1] = 20
+        val_func_vector[-1] = 100
         val_func_vector = np.mat(val_func_vector).transpose()
         return val_func_vector
 
