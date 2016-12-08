@@ -4,7 +4,7 @@ This repository contains the complete source code for the programming assginment
 
 ## Regenerate the plots
 
-Run "make", and you will see that in main directory.
+Run "make" in code directory, and you will see that there.
 
 ## Report
 
@@ -12,4 +12,4 @@ See in Report directory the file ends up with .pdf
 
 ## Source
 
-If there are some errors when running the code, please "git clone https://github.com/356255531/ADP_Programming_Assignment.git" for downloading the from newest version.
+If there are some errors when running the code, please "git clone https://github.com/356255531/ADP_Programming_Assignment.git" for redownloading that from newest version.

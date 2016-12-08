@@ -4,3 +4,4 @@ make: Makefile main.py clean
 
 clean:
 	rm -f *.jpg
+	rm -f Toolbox/*.pyc
