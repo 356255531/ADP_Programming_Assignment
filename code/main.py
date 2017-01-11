@@ -58,7 +58,7 @@ alpha = 0.9
 ################ Comparison Condition Setting ################
 algorithm_sets = [ValueIterationSyn, PolicyIterationSyn]
 
-alpha_sets = [0, 0.3, 0.6, 0.9]
+alpha_sets = [0, 0.01, 0.6, 0.9]
 
 reward_sets = [Reward1, Reward2]
 
