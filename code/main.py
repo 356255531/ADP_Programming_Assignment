@@ -58,7 +58,7 @@ alpha = 0.9
 ################ Comparison Condition Setting ################
 algorithm_sets = [ValueIterationSyn, PolicyIterationSyn]
 
-alpha_sets = [0, 0.01, 0.6, 0.9]
+alpha_sets = [0.1, 0.2, 0.6, 0.9]
 
 reward_sets = [Reward1, Reward2]
 
@@ -83,6 +83,15 @@ for algorithm_setting in algorithm_sets:
                 epsilon
             )
             algorithm.run()
+            if (
+                algorithm_setting == ValueIterationSyn
+            ) and (reward_setting == Reward1) and (alpha == 0.6):
+                optimal_value_function_reward1 = algorithm.get_val_func_vector()
+            if (
+                algorithm_setting == ValueIterationSyn
+            ) and (reward_setting == Reward2) and (alpha == 0.6):
+                optimal_value_function_reward2 = algorithm.get_val_func_vector()
+
             algorithm_compare_sets.append(algorithm)
 
 ###################### Record Policy #########################
@@ -107,3 +116,48 @@ plot_agent.plot_val_func(
     state_action_space,
     env
 )
+
+algorithm_compare_sets = []
+plot_labels = []
+for algorithm_setting in algorithm_sets:
+    for reward_setting in reward_sets:
+        for alpha in alpha_sets:
+            reward = reward_setting(env)
+            plot_labels.append(algorithm_setting.__name__ +
+                               ', ' +
+                               reward_setting.__name__ +
+                               ', ' +
+                               'alpha = ' +
+                               str(alpha))
+            if (reward_setting == Reward1):
+                algorithm = algorithm_setting(
+                    env,
+                    state_action_space,
+                    reward,
+                    alpha,
+                    epsilon,
+                    optimal_value_function_reward1
+                )
+            else:
+                algorithm = algorithm_setting(
+                    env,
+                    state_action_space,
+                    reward,
+                    alpha,
+                    epsilon,
+                    optimal_value_function_reward2
+                )
+            algorithm.run()
+            algorithm_compare_sets.append(algorithm)
+
+###################### Record Policy #########################
+policy_sets = []
+error_sets = []
+val_func_vector_sets = []
+for algorithm_instance in algorithm_compare_sets:
+    error = algorithm_instance.get_error()
+    error_sets.append(error)
+
+###################### Plot and save images ####################
+plot_agent = PlotAgent(env, state_action_space)  # note that all the images will be saved
+plot_agent.plot_error(error_sets, plot_labels, 'ErrorToGroundTruth.jpg')

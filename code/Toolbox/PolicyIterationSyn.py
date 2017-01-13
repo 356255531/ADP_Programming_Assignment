@@ -64,7 +64,8 @@ class PolicyIterationSyn(DP_AlgorithmSyn):
         state_action_space,
         reward,
         alpha,
-        epsilon
+        epsilon,
+        optimal_value=None
     ):
         super(PolicyIterationSyn, self).__init__()
         self.__env = env
@@ -72,11 +73,14 @@ class PolicyIterationSyn(DP_AlgorithmSyn):
         self.__reward = reward
         self.__alpha = alpha
         self.__epsilon = epsilon
+        self.optimal_value = optimal_value
         self.__val_func_vector = self.__init_val_func_vector(
             state_action_space
         )
         self.__policy = []
         self.__error = []
+        if self.optimal_value is not None:
+            self.__error2 = []
 
     def __init_val_func_vector(self, state_action_space):
         """
@@ -131,6 +135,9 @@ class PolicyIterationSyn(DP_AlgorithmSyn):
 
             return list
         """
+        if self.optimal_value is not None:
+            error2 = deepcopy(self.__error2)
+            return error2
         error = deepcopy(self.__error)
         return error
 
@@ -179,7 +186,14 @@ class PolicyIterationSyn(DP_AlgorithmSyn):
             error = np.linalg.norm(
                 pre_val_func_vector -
                 self.__val_func_vector
-            )
+            ) / 24
+            if self.optimal_value is not None:
+                error2 = np.linalg.norm(
+                    self.optimal_value -
+                    self.__val_func_vector
+                ) / 24
+                self.__error2.append(error2)
+
             if error < self.__epsilon:
                 count += 1
             else:

@@ -20,7 +20,7 @@ class PlotAgent(object):
     def __init__(
         self,
         env,
-        state_action_space
+        state_action_space,
     ):
         super(PlotAgent, self).__init__()
         self.__env = env
@@ -29,7 +29,8 @@ class PlotAgent(object):
     def plot_policies(
         self,
         plot_policies,
-        plot_labels
+        plot_labels,
+        file_name='PolicyPlot.jpg'
     ):
         """
             visualize the given policies and save the image
@@ -67,12 +68,13 @@ class PlotAgent(object):
             ax.set_xlim([-1, 8])
             ax.set_ylim([8, -1])
 
-        plt.savefig('PolicyPlot.jpg')
+        plt.savefig(file_name)
 
     def plot_error(
         self,
         error_sets,
-        plot_labels
+        plot_labels,
+        file_name='ErrorPlot.jpg'
     ):
         """
             plots the given errors and save the image
@@ -88,14 +90,15 @@ class PlotAgent(object):
             plt.plot(t, error_sets[num])
             plt.title(plot_labels[num])
 
-        plt.savefig('ErrorPlot.jpg')
+        plt.savefig(file_name)
 
     def plot_val_func(
         self,
         val_func_vector_sets,
         plot_labels,
         state_action_space,
-        env
+        env,
+        file_name='ValueFunction.jpg'
     ):
         """
             visualize the given value functions with color boxes and save the image
@@ -133,7 +136,7 @@ class PlotAgent(object):
             plt.gca().set_xlim([-1, 8])
             plt.gca().set_ylim([8, -1])
 
-        plt.savefig('ValueFunctionPlot.jpg')
+        plt.savefig(file_name)
 
 
 if __name__ == '__main__':
